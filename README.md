@@ -7,5 +7,6 @@ make run
 ```
 - features checklist
 - [x] init project
+- [ ] add test case
 - [ ] use external database
 - [ ] add docker installation

@@ -3,5 +3,5 @@
 - Features CRUD : Create, Read, Update, Delete
 - run using uvicorn
 ```
-uvicorn task_management:app --reload --port 5000
+make run
 ```

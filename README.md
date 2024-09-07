@@ -5,3 +5,7 @@
 ```
 make run
 ```
+- features checklist
+- [x] init project
+- [ ] use external database
+- [ ] add docker installation

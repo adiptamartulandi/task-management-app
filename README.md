@@ -8,7 +8,7 @@ make run
 - features checklist
 - [x] init project
 - [ ] add test case
-- [ ] use external database for storage
+- [x] use external database for storage (elastic search)
 - [ ] add docker
 - [ ] add datetime features
 - [ ] add search features

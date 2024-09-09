@@ -1,6 +1,6 @@
 - Simple task management app using FastAPI
-- Using in-memory storage
-- Features CRUD : Create, Read, Update, Delete
+- Using Elastic Search for storage, why ? to implement search capabilities
+- Features CRUDS : Create, Read, Update, Delete, Search
 - run using uvicorn
 ```
 make run

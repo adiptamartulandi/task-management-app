@@ -3,10 +3,11 @@ from fastapi.routing import APIRouter
 from typing import Literal
 
 from task_management.core.task_app import TaskManagementApp
+from task_management.config import ES_CONFIG
 
 
 router = APIRouter()
-task_app = TaskManagementApp()
+task_app = TaskManagementApp(ES_CONFIG)
 
 
 @router.post("/tasks")

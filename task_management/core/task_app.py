@@ -1,35 +1,42 @@
+from task_management.repository.elastic_repository import ElasticRepository
+from task_management.config import ES_CONFIG
 
 
-class TaskManagementApp:
+class TaskManagementApp(ElasticRepository):
     """
     This class is the main class of the application. It is responsible for managing tasks.
     This class have 4 functionalitis CRUD: Create, Read, Update, and Delete task.
 
     Each task has a title, description, and status.
-    Currently, using in-mempory data storage, so the data will be lost when the application/server is closed.
+    Using Elastic Search as a repository to store the tasks.
     """
 
-    def __init__(self):
-        self.data = {}
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._build_template(ES_CONFIG.PATH_TO_QUERY_TEMPLATE)
 
     def create_task(self, title: str, description: str, status: str):
         """
         Create a new task with the given title and description.
         """
-
-        self.data[title] = {
-            "description": description,
-            "status": status
-        }
+        
+        self.es.index(
+            index=ES_CONFIG.INDEX_NAME,
+            id=title,
+            body={
+                "title": title,
+                "description": description,
+                "status": status
+            })
 
     def read_task(self, title: str):
         """
         Read the task with the given title.
         """
-
-        task = self.data.get(title)
+        
+        task = self.es.get(index=ES_CONFIG.INDEX_NAME, id=title)
         if task:
-            return task
+            return task["_source"]
         else:
             return "Task not found, please check the title."
 
@@ -38,32 +45,27 @@ class TaskManagementApp:
         Update the task with the given title.
         User can update the task description or status.
         """
-
-        task = self.data.get(title)
-        if task:
-            if type == "description":
-                task["description"] = value
-            elif type == "status":
-                task["status"] = value
-            else:
-                return "Invalid type. Please use description or status."
-        else:
-            return "Task not found, please check the title."
+        
+        self.es.update(
+            index=ES_CONFIG.INDEX_NAME,
+            id=title,
+            body={
+                "doc": {
+                    type: value
+                }
+            })
 
     def delete_task(self, title: str):
         """
         Delete the task with the given title.
         """
-
-        task = self.data.get(title)
-        if task:
-            del self.data[title]
-        else:
-            return "Task not found, please check the title."
+        
+        self.es.delete(index=ES_CONFIG.INDEX_NAME, id=title)
 
     def show_all_tasks(self):
         """
         Show all the tasks.
         """
-
-        return self.data
+        
+        tasks = self.es.search(index=ES_CONFIG.INDEX_NAME)
+        return [task["_source"] for task in tasks["hits"]["hits"]]
